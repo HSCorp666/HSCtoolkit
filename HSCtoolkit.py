@@ -371,7 +371,7 @@ def web_module():
             print("URL is empty, please specify URL.")
 
     def dos_input():
-        if url is None and web is not None:
+        if os.getuid() == 0:
             ip = input("web(ip)>> ")
             port = int(input("web(port)>> "))
             byte_size = int(input("web(byte_size)>> "))
@@ -387,6 +387,8 @@ def web_module():
                 web_module()
             else:
                 dos.initiate_attack()
+        else:
+            print("Please run this as root.")
 
         # <========== END OF INPUTS ==========>
 
