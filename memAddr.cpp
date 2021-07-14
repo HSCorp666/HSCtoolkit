@@ -1,6 +1,4 @@
 #include <iostream>
-#include <fstream>
-#include <cstdlib>
 #include <string>
 #include <string.h>
 
@@ -15,7 +13,7 @@ void memory_address(string text){
 
 int main(){
     string text;
-    cout << "Enter some text: ";
+    cout << "option(enter-some-text)>> ";
     cin >> text;
     memory_address(text);
 }
