@@ -3,7 +3,7 @@ import requests
 from os import system
 from Core import *
 from scapy.layers.l2 import Ether, ARP, srp
-from scapy.all import send, sendp
+from scapy.all import send, sendp, RandMAC
 from scapy.layers.inet import IP, ICMP
 from scapy.layers.dot11 import RadioTap, Dot11, Dot11Deauth
 import threading
@@ -152,7 +152,7 @@ if __name__ == '__main__':
     system('clear')
 
     print("""
-          
+
 
       .-=-=-.
      /       /
@@ -163,7 +163,7 @@ if __name__ == '__main__':
      |.     .|
      ||xxxxx||
      '-._._.-' 
-          
+
        __  _______ ______               
        / / / / ___// ____/___  _________ 
       / /_/ /\__ \/ /   / __ \/ ___/ __ /
@@ -176,6 +176,23 @@ CURRENT_MODULE = None
 
 def cat_select():  # This function is the first startup function.
     global CURRENT_MODULE
+
+    def password_gen():
+        if not os.path.exists('a.out'):
+            os.system('g++ passwordGen.cpp')
+            os.system('./a.out')
+        else:
+            os.system('./a.out')
+
+        os.system('rm a.out')
+
+    def mem_addr():
+        if not os.path.exists('a.out'):
+            os.system('g++ memAddr.cpp')
+            os.system('./a.out')
+        else:
+            os.system('./a.out')
+            os.system('rm a.out')
 
     while True:
         command = input('option> ')
@@ -198,14 +215,10 @@ def cat_select():  # This function is the first startup function.
                 CURRENT_MODULE = 'TROJAN_MODULE'
                 break
 
-        elif command == 'get_mem_addr':   # feature is useless, for testing only.
-            if not os.path.exists('a.out'):
-                os.system('g++ memAddr.cpp')
-                os.system('./a.out')
-            else:
-                os.system('./a.out')
-
-            os.system('rm a.out')
+        elif command == 'get_mem_addr':  # feature is useless, for testing only.
+            mem_addr()
+        elif command == 'password_gen':
+            password_gen()
 
 
 cat_select()  # Calling the cat select function.
@@ -341,7 +354,8 @@ def network_module():
             4. clear (clears screen).
             5. exit (exits program).
             6. back (goes back to category selection). 
-            7. deauth (Deauths a MAC address).""")
+            7. deauth (Deauths a MAC address).
+            8. rand_mac (generates random mac address).""")
 
     def lan_flood(_msg: str, threads: int):
         lan = LAN()
@@ -382,6 +396,8 @@ def network_module():
             de_auth()
         elif cmd == 'back':
             cat_select()
+        elif cmd == 'rand_mac':
+            print(RandMAC())
         else:
             print("Invalid command.")
 
