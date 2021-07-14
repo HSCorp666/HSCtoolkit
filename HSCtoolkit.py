@@ -10,26 +10,6 @@ import threading
 import os
 
 
-print("""
-    The following packages need to be installed: 
-    
-    scapy
-    
-    The following applications need to be installed:
-    
-    g++
-    
-    If you do not install these packages/applications some features in this program will NOT work.
-    Installing these packages/applications is optional.
-    
-    < ========== Press enter to continue. ==========>
-    
-    """)
-
-_ = input()
-system('clear')
-
-
 def clear_and_renew():
     system('clear')
 
