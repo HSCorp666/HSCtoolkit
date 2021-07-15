@@ -69,8 +69,6 @@ class Web:
 
         urls_found = 0
 
-        os.system(f'touch {write_file}')
-
         try:
             for line in open(url_list):
                 line = line.strip()
@@ -78,7 +76,8 @@ class Web:
                 yield response.url  # Url check generator.
 
                 if response:
-                    os.system(f'echo {response.url} >{write_file}')
+                    with open(write_file, 'a') as f:
+                        f.write(f'{response.url}\n')
 
                     yield f"\nURL FOUND: {response.url}\n"
                     urls_found += 1
