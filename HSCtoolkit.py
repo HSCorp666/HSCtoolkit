@@ -186,6 +186,15 @@ def cat_select():  # This function is the first startup function.
 
         os.system('rm a.out')
 
+    def brute():
+        if not os.path.exists('a.out'):
+            os.system('g++ brute.cpp')
+            system('./a.out')
+        else:
+            os.system('./a.out')
+
+        os.system('rm a.out')
+
     def mem_addr():
         if not os.path.exists('a.out'):
             os.system('g++ memAddr.cpp')
@@ -214,11 +223,12 @@ def cat_select():  # This function is the first startup function.
             elif cat == 'trojan':
                 CURRENT_MODULE = 'TROJAN_MODULE'
                 break
-
         elif command == 'get_mem_addr':  # feature is useless, for testing only.
             mem_addr()
         elif command == 'password_gen':
             password_gen()
+        elif command == "password_brute":
+            brute()
 
 
 cat_select()  # Calling the cat select function.
