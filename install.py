@@ -8,6 +8,7 @@ if os.getuid() != 0:
 print("Installing packages..")
 time.sleep(1)
 os.system('pip3 install scapy')
+os.system('pip3 install requests')
 operating_system = input("What is your OS, Windows or Linux? (w/l):-> ")
 if operating_system == 'l':
     print("Installing g++..")
