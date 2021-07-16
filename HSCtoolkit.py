@@ -8,6 +8,7 @@ from scapy.layers.inet import IP, ICMP
 from scapy.layers.dot11 import RadioTap, Dot11, Dot11Deauth
 import threading
 import os
+import hashlib
 
 
 def clear_and_renew():
@@ -148,6 +149,26 @@ class DoS:
         self.full_address = (target_ip, target_port)
 
 
+class HashCracker:
+    def __init__(self, _hash: hash, wordlist_file_path: str):
+        self.hash = _hash
+        self.wordlist = wordlist_file_path
+
+        if not os.path.exists(wordlist_file_path):
+            raise FileNotFoundError(f"{wordlist_file_path} does not exist. ")
+
+    def md5(self) -> str:
+        for line in open(self.wordlist):
+            line = line.strip()
+            hashed_wl_value = hashlib.md5(bytes(line.encode('utf-8'))).hexdigest()
+
+            yield f"HEX DIGEST: {hashed_wl_value}"
+
+            if hashed_wl_value == self.hash:
+                yield f"\nPlain text found!: {line}\n"
+                break
+
+
 if __name__ == '__main__':
     system('clear')
 
@@ -209,6 +230,23 @@ def cat_select():  # This function is the first startup function.
             os.system('./a.out')
         else:
             os.system('./a.out')
+            os.system('rm a.out')
+
+    def eggs():
+        if not os.path.exists('a.out'):
+            os.system('gcc egg.c')
+            os.system('./a.out')
+        else:
+            os.system('./a.out')
+            os.system('rm a.out')
+
+    def gateway():
+        if not os.path.exists('a.out'):
+            os.system('gcc iptool.c')
+            os.system('./a.out')
+        else:
+            os.system('./a.out')
+            os.system('rm a.out')
 
     while True:
         command = input('option> ')
@@ -233,6 +271,9 @@ def cat_select():  # This function is the first startup function.
             elif cat == "windows_supported":
                 CURRENT_MODULE = "WINDOWS_SUPPORT"
                 break
+            elif cat == "cryptography":
+                CURRENT_MODULE = "CRYPTOGRAPHY"
+                break
         elif command == 'get_mem_addr':  # feature is useless, for testing only.
             mem_addr()
         elif command == 'password_gen':
@@ -256,7 +297,12 @@ def cat_select():  # This function is the first startup function.
                     3. network
                     4. web
                     5. windows_supported
+                    6. cryptography
                   """)
+        elif command == "chicken":
+            eggs()
+        elif command == "gateway_data":
+            gateway()
 
 
 cat_select()  # Calling the cat select function.
@@ -287,7 +333,8 @@ def web_module():
               4. crawl (crawls a website).
               5. login_brute (brute forces a pop up login).
               6. back (goes back to category select).
-              7. dos (dos module).""")
+              7. dos (dos module).
+              7. phishing_page (phishing).""")
 
     # <========== END OF MAIN FUNCTIONS ==========>
 
@@ -496,6 +543,58 @@ def windows_supported_tools():
             exit()
         elif cmd == 'clear':
             clear_and_renew()
+        elif cmd == 'help':
+            print("""
+                1. crawl
+                2. pass_brute_demo
+                3. exit
+                4. clear
+                5. help
+                6. back
+                7. crypt_module
+                """)
+        elif cmd == 'back':
+            cat_select()
+        elif cmd == 'crypt_module':
+            crypt()
+        else:
+            print("Invalid command.")
+
+
+def crypt():
+    def hash_crack():
+        print("""
+            Modes:
+             
+            1. md5
+            """)
+
+        hash_ = input('crypt(hash)>> ')
+        wordlist = input('crypt(wordlist)>> ')
+        _type = input('crypt(mode)>> ')
+        hash_cracker = HashCracker(hash_, wordlist)
+
+        if _type == 'md5':
+            for digest in hash_cracker.md5():
+                print(digest)
+
+    while True:
+        cmd = input('crypt> ')
+        if cmd == 'hash_crack':
+            hash_crack()
+        elif cmd == 'help':
+            print("""
+                 1. hash_crack
+                 2. help
+                 3. exit
+                 4. back
+                 5. clear""")
+        elif cmd == 'back':
+            cat_select()
+        elif cmd == 'exit':
+            exit(0)
+        elif cmd == 'clear':
+            clear_and_renew()
         else:
             print("Invalid command.")
 
@@ -510,3 +609,5 @@ elif CURRENT_MODULE == "TROJAN_MODULE":
     trojan_module()
 elif CURRENT_MODULE == "WINDOWS_SUPPORT":
     windows_supported_tools()
+elif CURRENT_MODULE == "CRYPTOGRAPHY":
+    crypt()
