@@ -203,6 +203,13 @@ def cat_select():  # This function is the first startup function.
             os.system('./a.out')
             os.system('rm a.out')
 
+    def calculator():
+        if not os.path.exists('a.out'):
+            os.system('g++ calc.cpp')
+            os.system('./a.out')
+        else:
+            os.system('./a.out')
+
     while True:
         command = input('option> ')
         if command == 'exit':
@@ -229,6 +236,8 @@ def cat_select():  # This function is the first startup function.
             password_gen()
         elif command == "password_brute":
             brute()
+        elif command == 'calc':
+            calculator()
 
 
 cat_select()  # Calling the cat select function.
