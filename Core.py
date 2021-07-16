@@ -34,3 +34,8 @@ class OutOfOrder(Exception):
 class TooManyThreadsError(Exception):
     def __init__(self, msg="To many threads"):
         super().__init__(msg)
+
+
+class HttpsNotIncludedError(Exception):
+    def __init__(self, msg="https:// is not included in request url."):
+        super().__init__(msg)
