@@ -464,12 +464,40 @@ def windows_supported_tools():
 
         os.system('rm a.out')
 
+    def crawler(url_: str, url_list_: str):
+        if not os.path.exists(url_list_):
+            raise FileNotFoundError(f"{url_list_} is not found.")
+        elif 'https://' not in url_:
+            raise HttpsNotIncludedError
+
+        urls_found = 0
+
+        try:
+            for line in open(url_list_):
+                line = line.strip()
+                response = requests.get(f"{url_}/{line}")
+                print(f"Trying: {response.url}")
+
+                if response:
+                    print(f"\n!!URL FOUND!!: {response.url}\n")
+                    urls_found += 1
+        except KeyboardInterrupt:
+            print(f"\nUrls Found: {urls_found}")
+
     while True:
         cmd = input('wst> ')
         if cmd == "pass_brute_demo":
             brute()
         elif cmd == "crawl":
-
+            url = input("wst(url)>> ")
+            url_list = input("wst(url-list)>> ")
+            crawler(url, url_list)
+        elif cmd == 'exit':
+            exit()
+        elif cmd == 'clear':
+            clear_and_renew()
+        else:
+            print("Invalid command.")
 
 
 if CURRENT_MODULE == 'WEB_MODULE':
