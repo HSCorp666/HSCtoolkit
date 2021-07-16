@@ -230,14 +230,33 @@ def cat_select():  # This function is the first startup function.
             elif cat == 'trojan':
                 CURRENT_MODULE = 'TROJAN_MODULE'
                 break
+            elif cat == "windows_supported":
+                CURRENT_MODULE = "WINDOWS_SUPPORT"
+                break
         elif command == 'get_mem_addr':  # feature is useless, for testing only.
             mem_addr()
         elif command == 'password_gen':
             password_gen()
-        elif command == "password_brute":
+        elif command == "password_brute_demo":
             brute()
         elif command == 'calc':
             calculator()
+        elif command == "help":
+            print("""
+                    1. get_mem_addr
+                    2. password_gen
+                    3. password_brute
+                    4. calc
+                    5. help
+                    6. cat
+                    
+                    <---- CAT COMMANDS ---->
+                    1. trojan
+                    2. iot
+                    3. network
+                    4. web
+                    5. windows_supported
+                  """)
 
 
 cat_select()  # Calling the cat select function.
@@ -433,6 +452,26 @@ def iot():
         pass
 
 
+def windows_supported_tools():
+    print("\nWelcome to windows supported tools.\n")
+
+    def brute():
+        if not os.path.exists('a.out'):
+            os.system('g++ brute.cpp')
+            system('./a.out')
+        else:
+            os.system('./a.out')
+
+        os.system('rm a.out')
+
+    while True:
+        cmd = input('wst> ')
+        if cmd == "pass_brute_demo":
+            brute()
+        elif cmd == "crawl":
+
+
+
 if CURRENT_MODULE == 'WEB_MODULE':
     web_module()
 elif CURRENT_MODULE == 'NETWORK_MODULE':
@@ -441,3 +480,5 @@ elif CURRENT_MODULE == 'IOT_MODULE':
     iot()
 elif CURRENT_MODULE == "TROJAN_MODULE":
     trojan_module()
+elif CURRENT_MODULE == "WINDOWS_SUPPORT":
+    windows_supported_tools()
