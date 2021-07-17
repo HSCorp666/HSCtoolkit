@@ -286,7 +286,7 @@ def cat_select():  # This function is the first startup function.
             print("""
                     1. get_mem_addr
                     2. password_gen
-                    3. password_brute
+                    3. password_brute_demo
                     4. calc
                     5. help
                     6. cat
