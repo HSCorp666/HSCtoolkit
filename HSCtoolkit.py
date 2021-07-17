@@ -222,7 +222,6 @@ def cat_select():  # This function is the first startup function.
             os.system('./a.out')
         else:
             os.system('./a.out')
-            os.system('rm a.out')
 
         os.system('rm a.out')
 
@@ -232,7 +231,6 @@ def cat_select():  # This function is the first startup function.
             os.system('./a.out')
         else:
             os.system('./a.out')
-            os.system('rm a.out')
 
         os.system('rm a.out')
 
@@ -240,10 +238,8 @@ def cat_select():  # This function is the first startup function.
         if not os.path.exists('a.out'):
             os.system('gcc egg.c')
             os.system('./a.out')
-            os.system('rm a.out')
         else:
             os.system('./a.out')
-            os.system('rm a.out')
 
         os.system('rm a.out')
 
@@ -253,7 +249,6 @@ def cat_select():  # This function is the first startup function.
             os.system('./a.out')
         else:
             os.system('./a.out')
-            os.system('rm a.out')
 
         os.system('rm a.out')
 
