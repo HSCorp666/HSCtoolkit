@@ -168,6 +168,29 @@ class HashCracker:
                 yield f"\nPlain text found!: {line}\n"
                 break
 
+    def sha256(self) -> str:
+        for line in open(self.wordlist):
+            line = line.strip()
+            hashed_wl = hashlib.sha256(bytes(line.encode('utf-8'))).hexdigest()
+            yield f"HEX DIGEST: {hashed_wl}"
+
+            if hashed_wl == self.hash:
+                yield f"Plain text found!: {line}"
+                break
+
+
+class Hash:
+    def __init__(self, string: str):
+        self.string = string
+
+    def md5(self) -> hash:
+        hashed_string = hashlib.md5(bytes(self.string.encode('utf-8'))).hexdigest()
+        return hashed_string
+
+    def sha256(self) -> hash:
+        hashed_string = hashlib.sha256(bytes(self.string.encode('utf-8'))).hexdigest()
+        return hashed_string
+
 
 if __name__ == '__main__':
     system('clear')
@@ -571,6 +594,7 @@ def crypt():
             Modes:
              
             1. md5
+            2. sha256
             """)
 
         hash_ = input('crypt(hash)>> ')
@@ -581,6 +605,29 @@ def crypt():
         if _type == 'md5':
             for digest in hash_cracker.md5():
                 print(digest)
+        elif _type == 'sha256':
+            for digest in hash_cracker.sha256():
+                print(digest)
+        else:
+            print("Invalid mode.")
+
+    def hasher():
+        print("""
+                    Modes:
+
+                    1. md5
+                    2. sha256
+                    """)
+
+        string = input('crypt(string)>> ')
+        string_hasher = Hash(string)
+        mode = input('crypt(mode)>> ')
+        if mode == 'md5':
+            print(string_hasher.md5())
+        elif mode == 'sha256':
+            print(string_hasher.sha256())
+        else:
+            print("Invalid mode.")
 
     while True:
         cmd = input('crypt> ')
@@ -588,17 +635,20 @@ def crypt():
             hash_crack()
         elif cmd == 'help':
             print("""
-                 1. hash_crack
-                 2. help
-                 3. exit
-                 4. back
-                 5. clear""")
+                 1. help
+                 2. exit
+                 3. back
+                 4. clear
+                 5. hash_crack
+                 6. hashing""")
         elif cmd == 'back':
             cat_select()
         elif cmd == 'exit':
             exit(0)
         elif cmd == 'clear':
             clear_and_renew()
+        elif cmd == 'hashing':
+            hasher()
         else:
             print("Invalid command.")
 
