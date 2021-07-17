@@ -448,7 +448,7 @@ def network_module():
         for _msg in lan.saturate_lan(10):
             print(_msg)
 
-    def de_auth():
+    def de_auth():    # Deauths user.
         mac = input("network(mac_address)>> ")
         lan = LAN(mac)
         lan.de_auth()
