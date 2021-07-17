@@ -224,6 +224,8 @@ def cat_select():  # This function is the first startup function.
             os.system('./a.out')
             os.system('rm a.out')
 
+        os.system('rm a.out')
+
     def calculator():
         if not os.path.exists('a.out'):
             os.system('g++ calc.cpp')
@@ -232,13 +234,18 @@ def cat_select():  # This function is the first startup function.
             os.system('./a.out')
             os.system('rm a.out')
 
+        os.system('rm a.out')
+
     def eggs():
         if not os.path.exists('a.out'):
             os.system('gcc egg.c')
             os.system('./a.out')
+            os.system('rm a.out')
         else:
             os.system('./a.out')
             os.system('rm a.out')
+
+        os.system('rm a.out')
 
     def gateway():
         if not os.path.exists('a.out'):
@@ -247,6 +254,8 @@ def cat_select():  # This function is the first startup function.
         else:
             os.system('./a.out')
             os.system('rm a.out')
+
+        os.system('rm a.out')
 
     while True:
         command = input('option> ')
@@ -448,7 +457,7 @@ def network_module():
         for _msg in lan.saturate_lan(10):
             print(_msg)
 
-    def de_auth():    # Deauths user.
+    def de_auth():
         mac = input("network(mac_address)>> ")
         lan = LAN(mac)
         lan.de_auth()
