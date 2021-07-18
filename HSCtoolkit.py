@@ -191,6 +191,13 @@ class Hash:
         hashed_string = hashlib.sha256(bytes(self.string.encode('utf-8'))).hexdigest()
         return hashed_string
 
+    def sha1(self) -> hash:
+        hashed_string = hashlib.sha1(bytes(self.string.encode('utf-8'))).hexdigest()
+        return hashed_string
+
+    def sha224(self) -> hash:
+        hashed_string = hashlib.sha224(bytes(self.string.encode('utf-8'))).hexdigest()
+
 
 if __name__ == '__main__':
     system('clear')
