@@ -11,6 +11,11 @@ import os
 import hashlib
 
 
+def cancel(variable, return_func):
+    if variable == "__cancel__":
+        return_func()
+
+
 def clear_and_renew():
     system('clear')
 
@@ -332,6 +337,9 @@ def cat_select():  # This function is the first startup function.
                     4. web
                     5. windows_supported
                     6. cryptography
+                  
+                  You can say cancel at any time mid option to cancel.
+                  
                   """)
         elif command == "chicken":
             eggs()
@@ -361,14 +369,17 @@ def web_module():
 
     def _help():
         print("""
-              1.set_url (sets url).
+              1. set_url (sets url).
               2. current_url (gives current url).
               3. check_host (checks a host via ping).
               4. crawl (crawls a website).
               5. login_brute (brute forces a pop up login).
               6. back (goes back to category select).
-              7. dos (dos module).
-              7. phishing_page (phishing).""")
+              7. dos (dos module) OUT OF ORDER.
+              
+              You can say __cancel__ to cancel.
+              
+              """)
 
     # <========== END OF MAIN FUNCTIONS ==========>
 
@@ -376,7 +387,10 @@ def web_module():
 
     def check_host_input():
         if url is not None and web is not None:  # Checks if url is not None so it does not break.
-            time = int(input('web(ping-time)>> '))  # Ping time.
+            time = input('web(ping-time)>> ')  # Ping time.
+            cancel(time, web_module)
+
+            time = int(time)
             if web.host_online_check(time):  # host_online_check method returns bool.
                 print("Host online.")
             else:
@@ -387,7 +401,11 @@ def web_module():
     def crawl_input():
         if url is not None and web is not None:
             url_list = input("web(url-list)>> ")  # Asks for url-list.
+            cancel(url_list, web_module)
+
             write_file = input("web(write-file-name)>> ")  # Asks for file to write found urls.
+            cancel(write_file, web_module)
+
             crawl(url_list, write_file)
         else:
             print("URL is empty, please specify URL.")
@@ -395,7 +413,11 @@ def web_module():
     def login_brute_input():
         if url is not None and web is not None:
             wl = input('web(wordlist-file-path)>> ')  # Wordlist file path.
+            cancel(wl, web_module)
+
             known_username = input("web(known-username)>> ")
+            cancel(known_username, web_module)
+
             login_brute(wl, known_username)  # Brutes login.
         else:
             print("URL is empty, please specify URL.")
@@ -474,7 +496,10 @@ def network_module():
             5. exit (exits program).
             6. back (goes back to category selection). 
             7. deauth (Deauths a MAC address).
-            8. rand_mac (generates random mac address).""")
+            8. rand_mac (generates random mac address).
+            
+            You can say __cancel__ to cancel an option.
+            """)
 
     def lan_flood(_msg: str, threads: int):
         lan = LAN()
@@ -484,6 +509,8 @@ def network_module():
 
     def de_auth():
         mac = input("network(mac_address)>> ")
+        cancel(mac, network_module)
+
         lan = LAN(mac)
         lan.de_auth()
 
@@ -503,13 +530,19 @@ def network_module():
             exit(0)
         elif cmd == 'help':
             _help()
-        elif cmd == 'flood_lan':
+        elif cmd == 'lan_flood':
             if os.getuid() != 0:
                 print("Please run as root to use this feature.")
                 network_module()
 
             msg = input("network(flood-msg)>> ")
-            thread_amount = int(input("flood(threads)>> "))
+            cancel(msg, network_module)
+
+            thread_amount = input("flood(threads)>> ")
+            cancel(thread_amount, network_module)
+
+            thread_amount = int(thread_amount)
+
             lan_flood(msg, thread_amount)
         elif cmd == 'deauth':
             de_auth()
@@ -602,10 +635,18 @@ def crypt():
              
             1. md5
             2. sha256
+            
+            You can say __cancel__ at any time to cancel an option.
+            
             """)
 
         hash_ = input('crypt(hash)>> ')
+        cancel(hash_, crypt)
+
         wordlist = input('crypt(wordlist)>> ')
+        if wordlist == '__cancel__':
+            crypt()
+
         _type = input('crypt(mode)>> ')
         hash_cracker = HashCracker(hash_, wordlist)
 
@@ -624,11 +665,17 @@ def crypt():
 
                     1. md5
                     2. sha256
+                    
+                    say __cancel__ to cancel.
                     """)
 
         string = input('crypt(string)>> ')
+        cancel(string, crypt)
+
         string_hasher = Hash(string)
         mode = input('crypt(mode)>> ')
+        cancel(mode, crypt)
+
         if mode == 'md5':
             print(string_hasher.md5())
         elif mode == 'sha256':
