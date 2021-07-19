@@ -507,6 +507,8 @@ def network_module():
 
     def verify_device():
         target = input("network(target-address)>> ")
+        cancel(target, network_module)
+
         lan = LAN(target_ip=target)
         if not lan.list_single_device():
             print("Device not found.")
