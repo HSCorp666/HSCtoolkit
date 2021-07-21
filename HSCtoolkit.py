@@ -9,6 +9,7 @@ import threading
 import os
 import hashlib
 import re
+from cryptography.fernet import Fernet
 
 
 def cancel(variable, return_func):
@@ -204,8 +205,9 @@ class Hash:
     hashing strings.
     """
 
-    def __init__(self, string: str):
+    def __init__(self, string: str = None, token: bytes = None):
         self.string = string
+        self.token = token
 
     def md5(self) -> hash:
         hashed_string = hashlib.md5(bytes(self.string.encode('utf-8'))).hexdigest()
@@ -221,6 +223,30 @@ class Hash:
 
     def sha224(self) -> hash:
         hashed_string = hashlib.sha224(bytes(self.string.encode('utf-8'))).hexdigest()
+        return hashed_string
+
+    def sha512(self) -> hash:
+        hashed_string = hashlib.sha512(self.string.encode('utf-8')).hexdigest()
+        return hashed_string
+
+    def keyed_hash(self, key: str = None) -> dict:
+        """
+        Keyed hash: a hash with a key.
+        If :param key is blank it will
+        generate a random hash.
+        """
+
+        if key is None:
+            key = Fernet.generate_key()
+        else:
+            key = bytes(key.encode())
+
+        with open('secret.key', 'wb') as key_file:
+            key_file.write(key)
+
+        f = Fernet(key)
+        _hash = f.encrypt(bytes(self.string.encode()))
+        return {'Hash': _hash, 'Key': key}
 
 
 if __name__ == '__main__':
@@ -746,6 +772,9 @@ def crypt():
 
                     1. md5
                     2. sha256
+                    3. sha1
+                    4. sha224
+                    5. keyed_hash
                     
                     say __cancel__ to cancel.
                     """)
@@ -761,6 +790,15 @@ def crypt():
             print(string_hasher.md5())
         elif mode == 'sha256':
             print(string_hasher.sha256())
+        elif mode == 'sha1':
+            print(string_hasher.sha1())
+        elif mode == 'sha224':
+            print(string_hasher.sha224())
+        elif mode == 'keyed_hash':
+            hashed_string = string_hasher.keyed_hash()['Hash']
+            key = string_hasher.keyed_hash()['Key']
+
+            print(f"\nHASH: {hashed_string}\nKEY: {key}\nKey has been stored in a file, make sure to keep it.\n")
         else:
             print("Invalid mode.")
 
