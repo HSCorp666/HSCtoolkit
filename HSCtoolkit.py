@@ -332,10 +332,7 @@ def cat_select():  # This function is the first startup function.
             elif cat == "cryptography":
                 CURRENT_MODULE = "CRYPTOGRAPHY"
                 break
-            elif cat == 'iot':
-                CURRENT_MODULE = 'IOT'
-                break
-                
+
         elif command == 'get_mem_addr':  # feature is useless, for testing only.
             mem_addr()
         elif command == 'password_gen':
@@ -803,5 +800,3 @@ elif CURRENT_MODULE == "WINDOWS_SUPPORT":
     windows_supported_tools()
 elif CURRENT_MODULE == "CRYPTOGRAPHY":
     crypt()
-elif CURRENT_MODULE == "IOT":
-    iot()
