@@ -1,4 +1,3 @@
-import re
 import requests
 from os import system
 from Core import *
@@ -9,6 +8,7 @@ from scapy.layers.dot11 import RadioTap, Dot11, Dot11Deauth
 import threading
 import os
 import hashlib
+import re
 
 
 def cancel(variable, return_func):
@@ -203,6 +203,7 @@ class Hash:
     This is a class for
     hashing strings.
     """
+
     def __init__(self, string: str):
         self.string = string
 
@@ -331,6 +332,10 @@ def cat_select():  # This function is the first startup function.
             elif cat == "cryptography":
                 CURRENT_MODULE = "CRYPTOGRAPHY"
                 break
+            elif cat == 'iot':
+                CURRENT_MODULE = 'IOT'
+                break
+                
         elif command == 'get_mem_addr':  # feature is useless, for testing only.
             mem_addr()
         elif command == 'password_gen':
@@ -593,10 +598,56 @@ def trojan_module():
         pass
 
 
-@out_of_order
 def iot():
+    def router_find():
+        response = requests.get('https://www.shodan.io/search?query=router')
+        data = response.text
+        ip = re.findall('\d+\.+\d+\.+\d+\.\d+', data)
+        port = re.findall('\d+\.+\d+\.+\d+\.\d+:\d+', data)
+        if ip:
+            for address in ip:
+                print(address)
+        elif port:
+            for addy_port in port:
+                print(addy_port)
+        else:
+            print("No IP found.")
+
+    def custom_query():
+        query = input('iot(query)>> ')
+        response = requests.get(f'https://www.shodan.io/search?query={query}')
+        data = response.text
+        ip = re.findall('\d+\.+\d+\.+\d+\.\d+', data)
+        port = re.findall('\d+\.+\d+\.+\d+\.\d+:\d+', data)
+        if ip:
+            for address in ip:
+                print(address)
+        elif port:
+            for addy_port in port:
+                print(addy_port)
+        else:
+            print("No IP found.")
+
     while True:
-        pass
+        cmd = input('iot> ')
+        if cmd == 'back':
+            cat_select()
+        elif cmd == 'clear':
+            clear_and_renew()
+        elif cmd == 'exit':
+            exit(0)
+        elif cmd == 'shodan_routers':
+            router_find()
+        elif cmd == 'help':
+            print("""
+                  1. shodan_router
+                  2. custom_query
+                  3. exit
+                  4. back
+                  6. clear
+                  """)
+        elif cmd == 'custom_query':
+            custom_query()
 
 
 def windows_supported_tools():
@@ -752,3 +803,5 @@ elif CURRENT_MODULE == "WINDOWS_SUPPORT":
     windows_supported_tools()
 elif CURRENT_MODULE == "CRYPTOGRAPHY":
     crypt()
+elif CURRENT_MODULE == "IOT":
+    iot()
