@@ -9,6 +9,7 @@ print("Installing packages..")
 time.sleep(1)
 os.system('pip3 install scapy')
 os.system('pip3 install requests')
+os.system('pip3 install cryptography')
 operating_system = input("What is your OS, Windows or Linux? (w/l):-> ")
 if operating_system == 'l':
     print("Installing g++..")
