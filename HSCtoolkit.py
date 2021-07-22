@@ -767,6 +767,23 @@ def crypt():
             print("Invalid mode.")
 
     def hasher():
+
+        def key_hash():
+            if os.path.exists('secret.key'):
+                confirm = input("Hash key file already exists, do you want to overwrite it? (y/n)>> ")
+                if confirm == 'y':
+                    hashed_string = string_hasher.keyed_hash()['Hash']
+                    key = string_hasher.keyed_hash()['Key']
+
+                    print(f"\nHASH: {hashed_string}\nKEY: {key}\nKey has been stored in a file, make sure to keep it.\n")
+                else:
+                    crypt()
+            else:
+                hashed_string = string_hasher.keyed_hash()['Hash']
+                key = string_hasher.keyed_hash()['Key']
+
+                print(f"\nHASH: {hashed_string}\nKEY: {key}\nKey has been stored in a file, make sure to keep it.\n")
+
         print("""
                     Modes:
 
@@ -795,10 +812,7 @@ def crypt():
         elif mode == 'sha224':
             print(string_hasher.sha224())
         elif mode == 'keyed_hash':
-            hashed_string = string_hasher.keyed_hash()['Hash']
-            key = string_hasher.keyed_hash()['Key']
-
-            print(f"\nHASH: {hashed_string}\nKEY: {key}\nKey has been stored in a file, make sure to keep it.\n")
+            key_hash()
         else:
             print("Invalid mode.")
 
